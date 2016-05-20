@@ -12,30 +12,37 @@ class GraphicsEdge(object):
     source (GraphicsNode): Node view
     dest (GraphicsNode): Node view
     id (int): ID
+    graphicsGraphView (GraphicsGraphView): View
     
     Attribute(s):
     source (GraphicsNode): Node view
     dest (GraphicsNode): Node view
     id (int): ID
+    graphicsGraphView (GraphicsGraphView): View
     '''
 
 
-    def __init__(self, source, dest, id):
+    def __init__(self, source, dest, id, graphicsGraphView):
         self.source = source
         self.dest = dest
         self.id = id
+        self.graphicsGraphView = graphicsGraphView
+    
+    def edit(self, dictArgsEdge):
+        '''Edit the edge.
         
-    def getGraphicsView(self):
-        '''Return the graphics view.'''
-        return self.scene().views()[0]
-        
+        Argument(s):
+        dictArgsEdge (Dictionary[]): Dictionary of arguments of the edge
+        '''
+        pass
+    
     def getFocus(self, id):
         '''Indicate when edge get the focus to highlight her in textual view
         
         Argument(s):
         id (str): ID of the node
         '''
-        controller = self.getGraphicsView().controller
+        controller = self.graphicsGraphView.controller
         controller.onSelectItem(id)
         
     def mousePressEvent(self, event):

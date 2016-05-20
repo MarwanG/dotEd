@@ -15,12 +15,13 @@ class GraphicsLineEdge(GraphicsEdge, QGraphicsLineItem):
     source (GraphicsNode): Node view
     dest (GraphicsNode): Node view
     id (int): ID
+    graphicsGraphView (GraphicsGraphView): View
     '''
 
 
-    def __init__(self, source, dest, id):
+    def __init__(self, source, dest, id, graphicsGraphView):
         # Parent constructor(s)
-        GraphicsEdge.__init__(self, source, dest, id)
+        GraphicsEdge.__init__(self, source, dest, id, graphicsGraphView)
         QGraphicsLineItem.__init__(self)
         
         self.setFlag(QGraphicsItem.ItemIsSelectable)        
@@ -42,7 +43,7 @@ class GraphicsLineEdge(GraphicsEdge, QGraphicsLineItem):
         self.setLine(pSource.x(), pSource.y(), pDest.x(), pDest.y())
     
     def shape(self):
-        '''Defines the shape of the item for selection '''
+        '''Defines the selection shape of the item.'''
         stroker = QPainterPathStroker()
         
         # Tolerance on click to update if needed

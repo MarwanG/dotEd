@@ -13,13 +13,13 @@ class GraphicsEllipseNode(GraphicsNode, QGraphicsEllipseItem):
     
     Argument(s):
     id (str): ID of the node
-    label (str): Label of the node
+    graphicsGraphView (GraphicsGraphView): View
     '''
 
 
-    def __init__(self, id, label):
+    def __init__(self, id, graphicsGraphView):
         # Parent constructor(s)
-        GraphicsNode.__init__(self, id, label)
+        GraphicsNode.__init__(self, id, graphicsGraphView)
         QGraphicsEllipseItem.__init__(self)
         
         # Init text node
@@ -27,12 +27,12 @@ class GraphicsEllipseNode(GraphicsNode, QGraphicsEllipseItem):
         self.setFlags(QGraphicsItem.ItemIsMovable |
                       QGraphicsItem.ItemIsSelectable)
         self.centerTextInShape()
-        
+
     def updateShapeAndEdges(self):
         '''Center the text in the shape and update coordinates of each edge of
            the current node'''
         self.centerTextInShape()
-        self.getGraphicsView().updateEdgesOfNode(self)
+        self.graphicsGraphView.updateEdgesOfNode(self)
 
     def centerTextInShape(self):
         '''Center the text in the ellipse.'''

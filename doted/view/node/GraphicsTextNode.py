@@ -6,6 +6,7 @@ from PyQt5.Qt import Qt
 from PyQt5.QtWidgets import QGraphicsTextItem, QMessageBox
 
 from enumeration.NodeDotAttrs import NodeDotAttrs
+from utils.DotAttrsUtils import DotAttrsUtils
 
 
 class GraphicsTextNode(QGraphicsTextItem):
@@ -13,11 +14,11 @@ class GraphicsTextNode(QGraphicsTextItem):
 
 
     Argument(s):
-    label (str): Label of the node
+    label (str): Label of the node (default "")
     '''
 
 
-    def __init__(self, label):
+    def __init__(self, label=""):
         # Parent constructor(s)
         QGraphicsTextItem.__init__(self, label)
 
@@ -30,14 +31,8 @@ class GraphicsTextNode(QGraphicsTextItem):
         QGraphicsTextItem.keyPressEvent(self, event)
         self.parentItem().updateShapeAndEdges()
   
-    def mouseDoubleClickEvent(self, event):
-        '''Handle mouse double click event.
-
-        Argument(s):
-        event (QGraphicsSceneMouseEvent): Graphics scene mouse event
-        '''
-        QGraphicsTextItem.mouseDoubleClickEvent(self, event)
-        
+    def editLabel(self):
+        '''Edit label.'''
         # Enable edit text
         self.setTextInteractionFlags(Qt.TextEditorInteraction)
         
@@ -59,12 +54,14 @@ class GraphicsTextNode(QGraphicsTextItem):
         
         # Label is valid: we can do the update
         if pydotGraph:
-            dicDotAttrs = {}
-            dicDotAttrs[NodeDotAttrs.label.value] = self.toPlainText()
+            dicDotAttrs = {
+                   NodeDotAttrs.label.value:
+                            DotAttrsUtils.formatLabel(self.toPlainText())
+                   }
             
             # Update text in other views
             node = self.parentItem()
-            node.getGraphicsView().controller.onEditNode(node.id, dicDotAttrs)
+            node.graphicsGraphView.controller.onEditNode(node.id, dicDotAttrs)
             
             # Disable edit text
             self.setTextInteractionFlags(Qt.NoTextInteraction)
@@ -89,7 +86,7 @@ class GraphicsTextNode(QGraphicsTextItem):
         '''Sets the item's text to text.
         
         Argument(s):
-        text (str): Text to set
+        text (str): New text
         '''
         QGraphicsTextItem.setPlainText(self, text)
         self.parentItem().updateShapeAndEdges()

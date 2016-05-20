@@ -6,16 +6,12 @@ class Observer(object):
     
     
     Argument(s):
-    model (Subject): Subject
-    
-    Attribute(s):
-    model (Subject): Subject
+    subject (Subject): Observer subscribe to subject
     '''
     
     
-    def __init__(self, model):
-        self.model = model
-        self.model.addObserver(self)
+    def __init__(self, subject):
+        subject.addObserver(self)
     
     def update(self):
         '''Update the observer.'''
