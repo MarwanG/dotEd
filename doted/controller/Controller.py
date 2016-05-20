@@ -13,6 +13,7 @@ class Controller(Observer):
     view (View): View of the controller
     
     Attribute(s):
+    model (Graph): Model of the Graph in dotEd application
     view (View): View of the controller
     '''
 
@@ -21,6 +22,7 @@ class Controller(Observer):
         # Parent constructor(s)
         Observer.__init__(self, model)
         
+        self.model = model
         self.view = view
         self.view.setController(self)
     

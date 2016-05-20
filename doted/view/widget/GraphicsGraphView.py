@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QGraphicsView, QGraphicsScene
 
 from enumeration.EdgeArgs import EdgeArgs
 from enumeration.NodeArgs import NodeArgs
-from enumeration.NodeDotAttrs import NodeDotAttrs
 from view.edge.GraphicsEdge import GraphicsEdge
 from view.edge.GraphicsLineEdge import GraphicsLineEdge
 from view.node.GraphicsEllipseNode import GraphicsEllipseNode
@@ -46,24 +45,16 @@ class GraphicsGraphView(View, QGraphicsView):
         Argument(s):
         dictArgsNode (Dictionary[]): Dictionary of arguments of the node
         '''
-        # Get the text of the node
-        text = self.getText(
-                    dictArgsNode[NodeArgs.dotAttrs], dictArgsNode[NodeArgs.id])
-        
         # Create the node
         self.nodes[dictArgsNode[NodeArgs.id]] = GraphicsEllipseNode(
-                                              dictArgsNode[NodeArgs.id], text)
-               
-        # Set the position
-        self.nodes[dictArgsNode[NodeArgs.id]].setPos(dictArgsNode[NodeArgs.x],
-                              dictArgsNode[NodeArgs.y]) 
-          
-        # Add the node to the scene
+                                              dictArgsNode[NodeArgs.id],
+                                              self)
+        # Edit it
+        self.editNode(dictArgsNode)
+        
+        # Add it to the scene
         self.scene.addItem(self.nodes[dictArgsNode[NodeArgs.id]])
-               
-        # Center scene on the node if needed
-        if self.updateSceneRect(self.nodes[dictArgsNode[NodeArgs.id]]):
-            self.centerOn(self.nodes[dictArgsNode[NodeArgs.id]])
+        
         
     def editNode(self, dictArgsNode):
         '''Edit a node.
@@ -71,22 +62,7 @@ class GraphicsGraphView(View, QGraphicsView):
         Argument(s):
         dictArgsNode (Dictionary[]): Dictionary of arguments of the node
         '''
-        # Get the text of the node
-        text = self.getText(
-                    dictArgsNode[NodeArgs.dotAttrs], dictArgsNode[NodeArgs.id])
-        
-        # Update the text
-        self.nodes[dictArgsNode[NodeArgs.id]].graphicsTextNode.setPlainText(
-                                                text)
-        
-        # Update position
-        self.nodes[dictArgsNode[NodeArgs.id]].setX(dictArgsNode[NodeArgs.x])
-        self.nodes[dictArgsNode[NodeArgs.id]].setY(dictArgsNode[NodeArgs.y])
-        self.updateEdgesOfNode(self.nodes[dictArgsNode[NodeArgs.id]])
-        
-        # Center scene on the node if needed
-        if self.updateSceneRect(self.nodes[dictArgsNode[NodeArgs.id]]):
-            self.centerOn(self.nodes[dictArgsNode[NodeArgs.id]])
+        self.nodes[dictArgsNode[NodeArgs.id]].edit(dictArgsNode)
 
     def removeNode(self, dictArgsNode):
         '''Remove a node.
@@ -114,7 +90,10 @@ class GraphicsGraphView(View, QGraphicsView):
         
         # Create the edge
         self.edges[dictArgsEdge[EdgeArgs.id]] = GraphicsLineEdge(source, dest,
-                                                    dictArgsEdge[EdgeArgs.id])
+                                                    dictArgsEdge[EdgeArgs.id],
+                                                    self)
+        # Edit it
+        self.editEdge(dictArgsEdge)
         
         # Add edge to the scene
         self.scene.addItem(self.edges[dictArgsEdge[EdgeArgs.id]])
@@ -125,7 +104,7 @@ class GraphicsGraphView(View, QGraphicsView):
         Argument(s):
         dictArgsEdge (Dictionary[]): Dictionary of arguments of the edge
         '''
-        pass
+        self.edges[dictArgsEdge[EdgeArgs.id]].edit(dictArgsEdge)
     
     def removeEdge(self, dictArgsEdge):
         '''Remove an edge.
@@ -146,15 +125,7 @@ class GraphicsGraphView(View, QGraphicsView):
         for edge in self.edges.values():
             # Check if the edge contains the current node
             if edge.source == graphicsNode or edge.dest == graphicsNode:
-                edge.update()   
-
-    def getText(self, dotAttrs, id):
-        '''Return the label if it is defined and not void, else the id.'''
-        if NodeDotAttrs.label.value in dotAttrs:
-            if dotAttrs[NodeDotAttrs.label.value]:
-                return dotAttrs[NodeDotAttrs.label.value]
-        
-        return id
+                edge.update()
 
     def resetSceneRect(self):
         '''Reset the scene rect with the viewport.'''

@@ -17,6 +17,33 @@ class DotAttrsUtils(object):
     realNumberPattern = "\s*-?\d+\.?\d*\s*"
     
     @staticmethod
+    def formatLabel(label):
+        '''Format the dot label attribute.
+        
+        Argument(s)
+        label (str): Label
+        '''
+        # Must add quotes if there are spaces or EOL
+        if ' ' in label or '\n' in label:
+            return '"' + label.replace('\n', '\\n') + '"'
+        
+        return label
+            
+    @staticmethod
+    def extractLabel(labelAttr):
+        '''Extract label from a dot label attribute.
+        
+        Argument(s):
+        labelAttr (str): Dot label attribute 
+        '''
+        # If it starts with a quote, then the label is between quotes : we
+        # don't take these quotes
+        if labelAttr[0] == '"':
+            return labelAttr[1:len(labelAttr) - 1].replace('\\n', '\n')
+        
+        return labelAttr
+    
+    @staticmethod
     def formatPos(x, y):
         '''Format the dot pos attribute with x and y coordinates.
         
@@ -24,7 +51,7 @@ class DotAttrsUtils(object):
         x (float): x coordinate
         y (float): y coordinate
         '''
-        return "\"" + str(x) + "," + str(y) + "\""
+        return '"' + str(x) + ',' + str(y) + '"'
 
     @staticmethod
     def extractPos(posAttr):
